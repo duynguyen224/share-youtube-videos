@@ -50,10 +50,6 @@ function ScrollTop(props) {
 
 ScrollTop.propTypes = {
     children: PropTypes.element.isRequired,
-    /**
-     * Injected by the documentation to work in an iframe.
-     * You won't need it on your project.
-     */
     window: PropTypes.func,
 };
 
@@ -61,7 +57,7 @@ export default function BackToTop(props) {
     return (
         <React.Fragment>
             <CssBaseline />
-            <AppBar style={{backgroundColor: "#fff"}} elevation="1">
+            <AppBar style={{backgroundColor: "#fff"}} elevation={1}>
                 <Container>
                     <HeaderContent />
                 </Container>
