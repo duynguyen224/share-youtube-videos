@@ -1,5 +1,5 @@
 import "./App.css";
-import { Box, Container } from "@mui/material";
+import { Box, Container, Skeleton } from "@mui/material";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Header from "./components/header/Header";
@@ -22,9 +22,8 @@ function App() {
     const {showLoginModal, showLogin, hideLogin} = useLoginModal()
     const {showShareModal, showShare, hideShare} = useShareModal();
 
-    const [videos, setVideos] = useState(listVideos);
-
-    console.log(videos.length)
+    const [videos, setVideos] = useState(listVideos.slice(0, 8));
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         function start(){
@@ -34,7 +33,19 @@ function App() {
             })
         }
         gapi.load("client:auth2", start);
+
+        setTimeout(() => {
+            setLoading(false);
+        }, 4000);
     }, [])
+
+    const fetchMoreVideo = () => {
+        // a fake async api call like which sends
+        // 20 more records in 1.5 secs
+        setTimeout(() => {
+          setVideos(videos.concat(listVideos.slice(videos.length, videos.length + 8)))
+        }, 1500);
+      };
 
     const handleLogin = (userInfo) => {
         localStorage.setItem("currentUser", JSON.stringify(userInfo.profileObj));
@@ -47,6 +58,7 @@ function App() {
                 appContext: {
                     currentUser: currentUser,
                     videos: videos,
+                    loading: loading,
                 },
                 appCallback: {
                     handleLogin: handleLogin,
@@ -54,6 +66,7 @@ function App() {
                     hideLogin: hideLogin,
                     showShare: showShare,
                     hideShare: hideShare,
+                    fetchMoreVideo: fetchMoreVideo,
                 },
             }}
         >
