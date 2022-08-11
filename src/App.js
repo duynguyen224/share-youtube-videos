@@ -12,14 +12,19 @@ import { gapi } from "gapi-script";
 import useLoginModal from "./hooks/useLoginModal";
 import ShareModal from "./components/share/ShareModal";
 import useShareModal from "./hooks/useShareModal";
-import { searchVideo } from "./services/fetchVideo";
+import { searchVideo } from "./services/fetchYoutube.js";
+import { listVideos } from "./constants/videosTest";
+
+import {addUser} from "./services/userService" 
 
 function App() {
     const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("currentUser")));
     const {showLoginModal, showLogin, hideLogin} = useLoginModal()
     const {showShareModal, showShare, hideShare} = useShareModal();
 
-    const [videos, setVideos] = useState([]);
+    const [videos, setVideos] = useState(listVideos);
+
+    console.log(videos.length)
 
     useEffect(() => {
         function start(){
@@ -40,7 +45,8 @@ function App() {
         <AppContext.Provider
             value={{
                 appContext: {
-                    currentUser: currentUser
+                    currentUser: currentUser,
+                    videos: videos,
                 },
                 appCallback: {
                     handleLogin: handleLogin,

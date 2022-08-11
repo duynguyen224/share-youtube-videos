@@ -12,10 +12,12 @@
     "@testing-library/user-event": "^13.5.0",
     "gapi-script": "^1.2.0",
     "jwt-decode": "^3.1.2",
+    "moment": "^2.29.4",
     "mongoose": "^6.5.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-google-login": "^5.2.2",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"

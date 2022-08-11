@@ -50,7 +50,7 @@ export default function LoginModal() {
                     </Divider>
                     <Box sx={{display: "flex", justifyContent: "center"}}>
                         <LoginButton/>
-                        <LogoutButton/>
+                        {/* <LogoutButton/> */}
                     </Box>
                 </DialogContent>
             </Dialog>

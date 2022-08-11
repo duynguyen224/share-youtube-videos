@@ -7,17 +7,67 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { AppContext } from "../../constants/AppContext";
-import { Box, Chip, Divider, Typography } from "@mui/material";
+import { Alert, Box, Chip, Divider, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect } from "react";
 import { gapi } from "gapi-script";
-
+import YoutubeFrame from "../youtubeFrame/YoutubeFrame";
+import { useState } from "react";
+import { isEmptyObject, getIdFromYoutubeUrl } from "../../utils";
+import { searchVideo } from "../../services/fetchYoutube.js";
+import { YOUTUBE_PREFIX_URL } from "../../constants";
 
 export default function ShareModal() {
     const { appCallback } = React.useContext(AppContext);
 
+    const [searchUrl, setSearchUrl] = useState("");
+    const [video, setVideo] = useState({});
+    const [error, setError] = useState(false);
+
+    useEffect(() => {
+        if(searchUrl.length > 0){
+            const videoId = getIdFromYoutubeUrl(searchUrl);
+            if(videoId === null){
+                setError(true);
+            }
+            if(searchUrl.includes(YOUTUBE_PREFIX_URL)){
+                console.log(videoId)
+                searchVideo(videoId).then((res) => handleSearchVideo(res));
+            }
+        }
+    }, [searchUrl]);
+
+
+    const handleSearchVideo = (response) => {
+        if (response.items.length > 0) {
+            setVideo(response.items[0]);
+            setError(false);
+        }else{
+            setError(true);
+        }
+    };
+
     const handleClose = () => {
         appCallback.hideShare();
+    };
+
+    const renderSearchResult = () => {
+        return (
+            <React.Fragment>
+                <Divider sx={{ mt: 2, mb: 2 }}>
+                    <Chip label="RESULT" />
+                </Divider>
+                {!isEmptyObject(video) && !error && (
+                    <YoutubeFrame video={video} height={"400px"} />
+                )}
+                {console.log(error)}
+                {error && (
+                    <Alert severity="error">
+                        May be your link is not valid, check it out!
+                    </Alert>
+                )}
+            </React.Fragment>
+        );
     };
 
     const dialogTitleStyles = {
@@ -30,34 +80,53 @@ export default function ShareModal() {
         <div>
             <Dialog open={true} onClose={handleClose} fullWidth>
                 <Box sx={dialogTitleStyles}>
-                    <DialogTitle sx={{fontWeight: "bold"}}>Share video to the world !</DialogTitle>
-                    <CloseIcon sx={{ marginRight: 2, cursor: "pointer" }} onClick={handleClose}/>
+                    <DialogTitle sx={{ fontWeight: "bold" }}>
+                        Share video to the world !
+                    </DialogTitle>
+                    <CloseIcon
+                        sx={{ marginRight: 2, cursor: "pointer" }}
+                        onClick={handleClose}
+                    />
                 </Box>
-                <Divider/>
+                <Divider />
                 <DialogContent>
-                    <Box sx={{position: "relative", display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-                        <TextField id="outlined-username" label="Enter video link" sx={{width: "80%"}} placeholder="Example: https://www.youtube.com/watch?v=wsklajasf"/>
-                        <Box>
+                    <Box
+                        sx={{
+                            position: "relative",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
+                    >
+                        <TextField
+                            id="outlined-test"
+                            label="Enter video link"
+                            sx={{ width: "100%" }}
+                            placeholder="Example: https://www.youtube.com/watch?v=wsklajasf"
+                            onChange={(e) => {
+                                setSearchUrl(e.target.value);
+                            }}
+                        />
+                        <Box sx={{ display: error ? "none" : "block" }}>
                             <Button
                                 variant="contained"
                                 size="small"
                                 disableElevation
-                                sx={{ height: "40px"}}
+                                sx={{ height: "40px" }}
                                 style={{
                                     borderRadius: 20,
                                     backgroundColor: "rgb(255 82 82)",
                                     padding: "6px 12px",
+                                    marginLeft: "5px",
                                     fontSize: "15px",
-                                    color: "#fff"
+                                    color: "#fff",
                                 }}
                             >
                                 Share
                             </Button>
                         </Box>
                     </Box>
-                    <Divider>
-                        <Chip label="RESULT" />
-                    </Divider>
+                    {renderSearchResult()}
                 </DialogContent>
             </Dialog>
         </div>

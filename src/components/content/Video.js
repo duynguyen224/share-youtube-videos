@@ -14,9 +14,14 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Box, Chip } from "@mui/material";
+import { Box, Chip, Link } from "@mui/material";
+import { convertToInternationalCurrencySystem, sliceText } from "../../utils";
+import moment from "moment";
+import YoutubeFrame from "../youtubeFrame/YoutubeFrame";
 
-export default function Video() {
+export default function Video(props) {
+    const {video} = props
+
     return (
         <Card sx={{ maxWidth: 345 }}>
             <CardHeader
@@ -28,17 +33,28 @@ export default function Video() {
                 title="Shrimp and Chorizo Paella"
                 subheader="September 14, 2016"
             />
-            <CardMedia
+            {/* <CardMedia
                 component="img"
                 height="194"
-                image="https://mui.com/static/images/cards/paella.jpg"
+                image={video.snippet.thumbnails.high.url}
                 alt="Paella dish"
-            />
-            <CardContent>
+            /> */}
+             {/* <iframe
+                width="100%"
+                height="194"
+                src={`https://www.youtube.com/embed/${video.id}`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                allowTransparency
+                title="Embedded youtube"
+            /> */}
+            <YoutubeFrame video={video}/>
+            <CardContent sx={{height: "160px"}}>
                 <Box>
                     <Typography component="div">
                         <Box sx={{ fontWeight: "bold" }}>
-                            This is tittle of video, can be too long
+                            {sliceText(video.snippet.title)}
                         </Box>
                     </Typography>
                     <Box>
@@ -46,8 +62,11 @@ export default function Video() {
                         <Chip label="Jazz" variant="outlined" size="small" />
                     </Box>
                     <Box>
-                        <Typography variant="p">100k views • </Typography>
-                        <Typography variant="p">2 years ago</Typography>
+                        <Link sx={{color: "#000", textDecoration: "none"}}>{video.snippet.channelTitle}</Link>
+                    </Box>
+                    <Box>
+                        <Typography variant="p">{convertToInternationalCurrencySystem(video.statistics.viewCount)} views • </Typography>
+                        <Typography variant="p">{moment(video.snippet.publishedAt).fromNow()}</Typography>
                     </Box>
                 </Box>
             </CardContent>
