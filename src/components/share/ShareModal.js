@@ -1,55 +1,19 @@
-import * as React from "react";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { AppContext } from "../../constants/AppContext";
-import { Alert, Box, Chip, Divider, Skeleton, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useEffect } from "react";
-import { gapi } from "gapi-script";
+import { Alert, Box, Chip, Divider, Skeleton } from "@mui/material";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import TextField from "@mui/material/TextField";
+import * as React from "react";
+import { AppContext } from "../../constants/AppContext";
+import useShareVideo from "../../hooks/useShareVideo";
+import { isEmptyObject } from "../../utils";
 import YoutubeFrame from "../youtubeFrame/YoutubeFrame";
-import { useState } from "react";
-import { isEmptyObject, getIdFromYoutubeUrl } from "../../utils";
-import { searchVideo } from "../../services/fetchYoutube.js";
-import { YOUTUBE_PREFIX_URL } from "../../constants";
 
 export default function ShareModal() {
     const { appCallback } = React.useContext(AppContext);
-
-    const [searchUrl, setSearchUrl] = useState("");
-    const [video, setVideo] = useState({});
-    const [error, setError] = useState(false);
-    const [frameLoading, setFrameLoading] = useState(false);
- 
-    useEffect(() => {
-        if(searchUrl.length > 0){
-            const videoId = getIdFromYoutubeUrl(searchUrl);
-            if(videoId === null){
-                setError(true);
-            }
-            if(searchUrl.includes(YOUTUBE_PREFIX_URL)){
-                setFrameLoading(true);
-                setTimeout(() => {
-                    searchVideo(videoId).then((res) => handleSearchVideo(res));
-                }, 2000);
-            }
-        }
-    }, [searchUrl]);
-
-
-    const handleSearchVideo = (response) => {
-        if (response.items.length > 0) {
-            setVideo(response.items[0]);
-            setError(false);
-            setFrameLoading(false);
-        }else{
-            setError(true);
-        }
-    };
+    const {searchUrl, video, error, frameLoading, handleSearchVideo, handleSetSearchUrl} = useShareVideo();
 
     const handleClose = () => {
         appCallback.hideShare();
@@ -105,9 +69,7 @@ export default function ShareModal() {
                             label="Enter video link"
                             sx={{ width: "100%" }}
                             placeholder="Example: https://www.youtube.com/watch?v=wsklajasf"
-                            onChange={(e) => {
-                                setSearchUrl(e.target.value);
-                            }}
+                            onChange={(e) => handleSetSearchUrl(e)}
                         />
                         <Box sx={{ display: error ? "none" : "block" }}>
                             <Button

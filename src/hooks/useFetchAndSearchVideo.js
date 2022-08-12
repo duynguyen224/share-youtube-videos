@@ -3,10 +3,12 @@ import { listVideos } from "../constants/videosTest";
 
 
 function useFetchAndSearchVideo() {
+    // Fetch
     const [videos, setVideos] = useState(listVideos.slice(0, 8));
     const [hasMoreVideo, setHasMoreVideo] = useState(true);
     const [loading, setLoading] = useState(true);
 
+    // Search
     const [searchVideoResult, setSearchVideoResult] = useState(listVideos)
     const [modeSearching, setModeSearching] = useState(false);
 
