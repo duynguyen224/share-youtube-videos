@@ -1,29 +1,22 @@
-import "./App.css";
-import { Box, Container, Skeleton } from "@mui/material";
-import { Link } from "react-router-dom";
-import React, { useEffect, useState } from "react";
-import Header from "./components/header/Header";
-import Content from "./components/content/Content";
-import CategoryList from "./components/content/CategoryList";
-import { AppContext } from "./constants/AppContext";
-import jwt_decode from "jwt-decode";
-import LoginModal from "./components/login/LoginModal";
+import { Box, Container } from "@mui/material";
 import { gapi } from "gapi-script";
-import useLoginModal from "./hooks/useLoginModal";
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import CategoryList from "./components/content/CategoryList";
+import Content from "./components/content/Content";
+import Header from "./components/header/Header";
+import LoginModal from "./components/login/LoginModal";
 import ShareModal from "./components/share/ShareModal";
+import { AppContext } from "./constants/AppContext";
+import useFetchAndSearchVideo from "./hooks/useFetchAndSearchVideo";
+import useLoginModal from "./hooks/useLoginModal";
 import useShareModal from "./hooks/useShareModal";
-import { searchVideo } from "./services/fetchYoutube.js";
-import { listVideos } from "./constants/videosTest";
-
-import {addUser} from "./services/userService" 
 
 function App() {
     const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("currentUser")));
     const {showLoginModal, showLogin, hideLogin} = useLoginModal()
     const {showShareModal, showShare, hideShare} = useShareModal();
-
-    const [videos, setVideos] = useState(listVideos.slice(0, 8));
-    const [loading, setLoading] = useState(true);
+    const {videos, hasMoreVideo, loading, searchVideoResult, modeSearching, fetchMoreVideo, handleSearchByName} = useFetchAndSearchVideo();
 
     useEffect(() => {
         function start(){
@@ -33,19 +26,7 @@ function App() {
             })
         }
         gapi.load("client:auth2", start);
-
-        setTimeout(() => {
-            setLoading(false);
-        }, 4000);
     }, [])
-
-    const fetchMoreVideo = () => {
-        // a fake async api call like which sends
-        // 20 more records in 1.5 secs
-        setTimeout(() => {
-          setVideos(videos.concat(listVideos.slice(videos.length, videos.length + 8)))
-        }, 1500);
-      };
 
     const handleLogin = (userInfo) => {
         localStorage.setItem("currentUser", JSON.stringify(userInfo.profileObj));
@@ -58,6 +39,9 @@ function App() {
                 appContext: {
                     currentUser: currentUser,
                     videos: videos,
+                    searchVideoResult: searchVideoResult,
+                    modeSearching: modeSearching,
+                    hasMoreVideo: hasMoreVideo,
                     loading: loading,
                 },
                 appCallback: {
@@ -67,10 +51,11 @@ function App() {
                     showShare: showShare,
                     hideShare: hideShare,
                     fetchMoreVideo: fetchMoreVideo,
+                    handleSearchByName: handleSearchByName,
                 },
             }}
         >
-            <Box sx={{ backgroundColor: "#f1f1f1" }}>
+            <Box sx={{ backgroundColor: "#f8f8f8", minHeight: "100vh"}}>
                 <Container maxWidth="lg">
                     <Header />
                     <CategoryList />

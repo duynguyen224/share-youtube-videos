@@ -7,7 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { AppContext } from "../../constants/AppContext";
-import { Alert, Box, Chip, Divider, Typography } from "@mui/material";
+import { Alert, Box, Chip, Divider, Skeleton, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect } from "react";
 import { gapi } from "gapi-script";
@@ -23,7 +23,8 @@ export default function ShareModal() {
     const [searchUrl, setSearchUrl] = useState("");
     const [video, setVideo] = useState({});
     const [error, setError] = useState(false);
-
+    const [frameLoading, setFrameLoading] = useState(false);
+ 
     useEffect(() => {
         if(searchUrl.length > 0){
             const videoId = getIdFromYoutubeUrl(searchUrl);
@@ -31,8 +32,10 @@ export default function ShareModal() {
                 setError(true);
             }
             if(searchUrl.includes(YOUTUBE_PREFIX_URL)){
-                console.log(videoId)
-                searchVideo(videoId).then((res) => handleSearchVideo(res));
+                setFrameLoading(true);
+                setTimeout(() => {
+                    searchVideo(videoId).then((res) => handleSearchVideo(res));
+                }, 2000);
             }
         }
     }, [searchUrl]);
@@ -42,6 +45,7 @@ export default function ShareModal() {
         if (response.items.length > 0) {
             setVideo(response.items[0]);
             setError(false);
+            setFrameLoading(false);
         }else{
             setError(true);
         }
@@ -57,15 +61,13 @@ export default function ShareModal() {
                 <Divider sx={{ mt: 2, mb: 2 }}>
                     <Chip label="RESULT" />
                 </Divider>
-                {!isEmptyObject(video) && !error && (
-                    <YoutubeFrame video={video} height={"400px"} />
-                )}
-                {console.log(error)}
+                {!isEmptyObject(video) && !error && !frameLoading && <YoutubeFrame video={video} height={"400px"}/>}
                 {error && (
                     <Alert severity="error">
                         May be your link is not valid, check it out!
                     </Alert>
                 )}
+                {frameLoading && <Skeleton animation="wave" variant="rectangle" height={400}/>}
             </React.Fragment>
         );
     };
