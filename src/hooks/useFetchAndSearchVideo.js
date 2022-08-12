@@ -34,7 +34,7 @@ function useFetchAndSearchVideo() {
 
     const fetchMoreVideo = () => {
         setTimeout(() => {
-            setVideos(videos.concat(listVideos.slice(videos.length, videos.length + 8)));
+            setVideos(videos.concat(searchVideoResult.slice(videos.length, videos.length + 8)));
         }, 1500);
     };
 
