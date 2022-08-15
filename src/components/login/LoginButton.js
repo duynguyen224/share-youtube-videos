@@ -10,7 +10,7 @@ function LoginButton() {
     }
 
     const onFailure = (res) => {
-        alert("Login failed !");
+        alert("Login failed");
     }
 
     return <GoogleLogin 

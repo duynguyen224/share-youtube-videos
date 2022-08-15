@@ -30,6 +30,7 @@ function App() {
 
     const handleLogin = (userInfo) => {
         localStorage.setItem("currentUser", JSON.stringify(userInfo.profileObj));
+        
         window.location.reload();
     };
 

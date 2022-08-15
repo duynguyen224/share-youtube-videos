@@ -9,7 +9,7 @@ function useFetchAndSearchVideo() {
     const [loading, setLoading] = useState(true);
 
     // Search
-    const [searchVideoResult, setSearchVideoResult] = useState(listVideos)
+    const [searchVideoResult, setSearchVideoResult] = useState(listVideos);
     const [modeSearching, setModeSearching] = useState(false);
 
     useEffect(() => {
