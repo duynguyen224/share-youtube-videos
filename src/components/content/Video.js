@@ -15,7 +15,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Box, Chip, Link, Skeleton, Tooltip, Zoom } from "@mui/material";
-import { convertToInternationalCurrencySystem, generateName, randomCharacterAlphabet, randomColor, sliceText } from "../../utils";
+import { convertDateToLongDate, convertToInternationalCurrencySystem, generateName, randomCharacterAlphabet, randomColor, sliceText } from "../../utils";
 import moment from "moment";
 import YoutubeFrame from "../youtubeFrame/YoutubeFrame";
 import { useState } from "react";
@@ -34,8 +34,8 @@ export default function Video(props) {
                         {randomCharacterAlphabet()}
                         </Avatar>
                 }
-                title= {loading ? <Skeleton/> : generateName()}
-                subheader= {loading ? <Skeleton/> : "September 14, 2016"}
+                title= {loading ? <Skeleton/> : video.createdBy.username}
+                subheader= {loading ? <Skeleton/> : convertDateToLongDate(video.createdAt)}
             />
             {loading ? <Skeleton animation="wave" variant="rectangle" height={194}/> : <YoutubeFrame video={video}/>}
             <CardContent sx={{height: "160px"}}>

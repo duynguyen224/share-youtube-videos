@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { YOUTUBE_PREFIX_URL } from "../constants";
-import { searchVideo } from "../services/fetchYoutube.js";
+import { AppContext } from '../constants/AppContext';
+import { addVideo, searchVideo } from "../services/videoService.js";
 import { getIdFromYoutubeUrl } from "../utils";
 
 function useShareVideo() {
@@ -8,6 +9,8 @@ function useShareVideo() {
     const [video, setVideo] = useState({});
     const [error, setError] = useState(false);
     const [frameLoading, setFrameLoading] = useState(false);
+
+    const {appContext} = useContext(AppContext);
 
     useEffect(() => {
         if(searchUrl.length > 0){
@@ -38,7 +41,12 @@ function useShareVideo() {
         setSearchUrl(e.target.value);
     }
 
-    return { searchUrl, video, error, frameLoading, handleSearchVideo, handleSetSearchUrl }
+    const handleShareVideo = (videoResult) => {
+        const videoCreated = addVideo(videoResult, appContext.currentUser);
+        return videoCreated;
+    }
+
+    return { searchUrl, video, error, frameLoading, handleSearchVideo, handleSetSearchUrl, handleShareVideo }
 }
 
 export default useShareVideo

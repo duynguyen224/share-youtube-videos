@@ -1,18 +1,11 @@
-const User = require("../models/User");
-
-async function addUser(userInfo) {
-    try {
-        const user = new User({
-            name: "Test user",
-            email: "Test email",
-            imageUrl: "Test image",
-            googleId: "Test google id",
-        });
-
-        await user.save();
-
-        console.log(user)
-    } catch (error) {
-        console.log(error.message);
-    }
-}
+export const loginUser = async (userInfo) => {
+    const response = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}/v1/auth/login`, {
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userInfo),
+    });
+    return response.json();
+};

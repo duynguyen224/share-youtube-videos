@@ -1,5 +1,6 @@
 import { alpha } from "@mui/material";
 import { ALPHABET, YOUTUBE_PREFIX_URL } from "../constants";
+import dateFormat from "dateformat"
 
 export const sliceText = (input) => {
     if (input.length > 40) {
@@ -42,6 +43,11 @@ export const randomCharacterAlphabet = () => {
 
 export const randomColor = () => {
     return `#${Math.floor(Math.random()*16777215).toString(16)}`;
+}
+
+export const convertDateToLongDate = (inputDate) => {
+    const date = new Date(inputDate);
+    return dateFormat(date, "mmmm dS, yyyy");
 }
 
 const  capFirst = (string) => {

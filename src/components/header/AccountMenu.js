@@ -19,7 +19,7 @@ export default function AccountMenu() {
     const {appContext, appCallback} = React.useContext(AppContext)
 
     const renderAvatar = () => {
-        return localStorage.getItem("currentUser") ? <Avatar>{appContext.currentUser.name}</Avatar> : <Avatar/>
+        return localStorage.getItem("currentUser") ? <Avatar src={appContext.currentUser.imageUrl}></Avatar> : <Avatar/>
     }
 
     const handleOpenLoginModal = () => {
@@ -43,7 +43,7 @@ export default function AccountMenu() {
     const renderUserMenuItems = () => {
         return [
             <MenuItem key={1}>
-                <Avatar /> My account
+                <Avatar/> My account
             </MenuItem>,
             <Divider key={2} />,
             <MenuItem onClick={handleLogout} key={3}>

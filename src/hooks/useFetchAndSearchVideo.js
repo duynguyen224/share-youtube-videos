@@ -1,22 +1,26 @@
 import { useEffect, useState } from 'react';
 import { listVideos } from "../constants/videosTest";
+import { getAllVideos, searchVideo, searchVideoByName } from '../services/videoService';
 
 
 function useFetchAndSearchVideo() {
     // Fetch
-    const [videos, setVideos] = useState(listVideos.slice(0, 8));
+    const [searchQuery, setSearchQuery] = useState("");
+    const [videos, setVideos] = useState([]);
     const [hasMoreVideo, setHasMoreVideo] = useState(true);
     const [loading, setLoading] = useState(true);
 
     // Search
-    const [searchVideoResult, setSearchVideoResult] = useState(listVideos);
+    const [searchVideoResult, setSearchVideoResult] = useState([]);
     const [modeSearching, setModeSearching] = useState(false);
 
     useEffect(() => {
-        setTimeout(() => {
-            setLoading(false);
-        }, 3000);
+        fetchAllVideos();
     }, [])
+
+    useEffect(() => {
+        handleSearchByName(searchQuery);
+    }, [searchQuery])
 
     useEffect(() => {
         if(searchVideoResult.length > 0){
@@ -27,10 +31,30 @@ function useFetchAndSearchVideo() {
     }, [searchVideoResult])
 
     useEffect(() => {
-        if(videos.length === searchVideoResult.length){
+        if(videos.length === searchVideoResult.length || videos.length === 0 || searchVideoResult.length === 0){
             setHasMoreVideo(false);
         }
     }, [videos])
+
+    const fetchAllVideos = async () => {
+        setLoading(true);
+        const res = await getAllVideos();
+        setVideos(res.slice(0, 8));
+        setSearchVideoResult(res);
+        setInterval(() => {
+            setLoading(false);
+        }, 1500);
+    }
+
+    const reloadData = async () => {
+        setLoading(true);
+        const res = await getAllVideos();
+        setVideos(res.slice(0, 8));
+        setSearchVideoResult(res);
+        setInterval(() => {
+            setLoading(false);
+        }, 1500);
+    }
 
     const fetchMoreVideo = () => {
         setTimeout(() => {
@@ -38,8 +62,8 @@ function useFetchAndSearchVideo() {
         }, 1500);
     };
 
-    const handleSearchByName = (videoName) => {
-        const result = listVideos.filter(item => item.snippet.title.toLowerCase().includes(videoName.toLowerCase()));
+    const handleSearchByName = async (videoName) => {
+        const result = await searchVideoByName(videoName);
         setTimeout(() => {
             setSearchVideoResult(result);
             setVideos(result.slice(0, 8));
@@ -52,7 +76,7 @@ function useFetchAndSearchVideo() {
         }
     }
 
-    return {videos, hasMoreVideo, loading, searchVideoResult, modeSearching, fetchMoreVideo, handleSearchByName};
+    return {videos, hasMoreVideo, loading, searchVideoResult, modeSearching, fetchMoreVideo, handleSearchByName, reloadData, searchQuery, setSearchQuery};
 }
 
 export default useFetchAndSearchVideo;

@@ -13,7 +13,7 @@ import YoutubeFrame from "../youtubeFrame/YoutubeFrame";
 
 export default function ShareModal() {
     const { appCallback } = React.useContext(AppContext);
-    const {searchUrl, video, error, frameLoading, handleSearchVideo, handleSetSearchUrl} = useShareVideo();
+    const {searchUrl, video, error, frameLoading, handleSearchVideo, handleSetSearchUrl, handleShareVideo} = useShareVideo();
 
     const handleClose = () => {
         appCallback.hideShare();
@@ -84,6 +84,11 @@ export default function ShareModal() {
                                     marginLeft: "5px",
                                     fontSize: "15px",
                                     color: "#fff",
+                                }}
+                                onClick={async () => {
+                                    await handleShareVideo(video);
+                                    appCallback.hideShare();
+                                    appCallback.reloadData();
                                 }}
                             >
                                 Share

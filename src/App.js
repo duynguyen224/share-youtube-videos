@@ -11,14 +11,17 @@ import { AppContext } from "./constants/AppContext";
 import useFetchAndSearchVideo from "./hooks/useFetchAndSearchVideo";
 import useLoginModal from "./hooks/useLoginModal";
 import useShareModal from "./hooks/useShareModal";
+import { loginUser } from "./services/userService";
 
 function App() {
     const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("currentUser")));
     const {showLoginModal, showLogin, hideLogin} = useLoginModal()
     const {showShareModal, showShare, hideShare} = useShareModal();
-    const {videos, hasMoreVideo, loading, searchVideoResult, modeSearching, fetchMoreVideo, handleSearchByName} = useFetchAndSearchVideo();
+    const [listVideos, setListVideos] = useState([]);
+    const {videos, hasMoreVideo, loading, searchVideoResult, modeSearching, searchQuery, setSearchQuery, fetchMoreVideo, handleSearchByName, reloadData} = useFetchAndSearchVideo();
 
     useEffect(() => {
+        // For oAuth2
         function start(){
             gapi.client.init({
                 clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
@@ -28,22 +31,25 @@ function App() {
         gapi.load("client:auth2", start);
     }, [])
 
-    const handleLogin = (userInfo) => {
-        localStorage.setItem("currentUser", JSON.stringify(userInfo.profileObj));
-        
-        window.location.reload();
+    const handleLogin = async (userInfo) => {
+    // Call api to login
+    const user = await loginUser(userInfo.profileObj);
+
+    localStorage.setItem("currentUser", JSON.stringify(user));
+    window.location.reload();
     };
 
     return (
         <AppContext.Provider
             value={{
                 appContext: {
+                    searchQuery: searchQuery,
                     currentUser: currentUser,
                     videos: videos,
                     searchVideoResult: searchVideoResult,
                     modeSearching: modeSearching,
                     hasMoreVideo: hasMoreVideo,
-                    loading: loading,
+                    loading: loading
                 },
                 appCallback: {
                     handleLogin: handleLogin,
@@ -53,6 +59,8 @@ function App() {
                     hideShare: hideShare,
                     fetchMoreVideo: fetchMoreVideo,
                     handleSearchByName: handleSearchByName,
+                    reloadData: reloadData,
+                    handleSearchChange: setSearchQuery,
                 },
             }}
         >
@@ -60,7 +68,7 @@ function App() {
                 <Container maxWidth="lg">
                     <Header />
                     <CategoryList />
-                    <Content />
+                    <Content videos={videos} />
                 </Container>
             </Box>
             {showLoginModal && <LoginModal />}
