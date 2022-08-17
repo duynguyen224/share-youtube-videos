@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { listVideos } from "../constants/videosTest";
-import { getAllVideos, searchVideo, searchVideoByName } from '../services/videoService';
+import { filterVideoByCategory, getAllCategories } from '../services/categoryService';
+import { getAllVideos, searchVideoByName } from '../services/videoService';
 
 
 function useFetchAndSearchVideo() {
@@ -13,13 +13,24 @@ function useFetchAndSearchVideo() {
     // Search
     const [searchVideoResult, setSearchVideoResult] = useState([]);
     const [modeSearching, setModeSearching] = useState(false);
+    
+    // Category
+    const [categories, setCategories] = useState([]);
 
+    
     useEffect(() => {
         fetchAllVideos();
+        fetchAllCategories();
     }, [])
 
     useEffect(() => {
+        setLoading(true);
         handleSearchByName(searchQuery);
+        let interval = null;
+        interval = setInterval(() => {
+            setLoading(false);
+            clearInterval(interval);
+        }, 1500);
     }, [searchQuery])
 
     useEffect(() => {
@@ -44,6 +55,11 @@ function useFetchAndSearchVideo() {
         setInterval(() => {
             setLoading(false);
         }, 1500);
+    }
+
+    const fetchAllCategories = async () => {
+        const res = await getAllCategories();
+        setCategories(res);
     }
 
     const reloadData = async () => {
@@ -76,7 +92,19 @@ function useFetchAndSearchVideo() {
         }
     }
 
-    return {videos, hasMoreVideo, loading, searchVideoResult, modeSearching, fetchMoreVideo, handleSearchByName, reloadData, searchQuery, setSearchQuery};
+    const getVideoByCategory = async (item) => {
+        setLoading(true);
+        const res = await filterVideoByCategory(item);
+        setVideos(res.slice(0, 8));
+        setSearchVideoResult(res);
+        let interval = null;
+        interval = setInterval(() => {
+            setLoading(false);
+            clearInterval(interval);
+        }, 1500);
+    }
+
+    return {videos, categories, hasMoreVideo, loading, searchVideoResult, modeSearching, fetchMoreVideo, handleSearchByName, reloadData, searchQuery, setSearchQuery, getVideoByCategory};
 }
 
 export default useFetchAndSearchVideo;

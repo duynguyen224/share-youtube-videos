@@ -18,7 +18,7 @@ function App() {
     const {showLoginModal, showLogin, hideLogin} = useLoginModal()
     const {showShareModal, showShare, hideShare} = useShareModal();
     const [listVideos, setListVideos] = useState([]);
-    const {videos, hasMoreVideo, loading, searchVideoResult, modeSearching, searchQuery, setSearchQuery, fetchMoreVideo, handleSearchByName, reloadData} = useFetchAndSearchVideo();
+    const {videos, categories, hasMoreVideo, loading, searchVideoResult, modeSearching, searchQuery, setSearchQuery, fetchMoreVideo, handleSearchByName, reloadData, getVideoByCategory} = useFetchAndSearchVideo();
 
     useEffect(() => {
         // For oAuth2
@@ -34,7 +34,6 @@ function App() {
     const handleLogin = async (userInfo) => {
     // Call api to login
     const user = await loginUser(userInfo.profileObj);
-
     localStorage.setItem("currentUser", JSON.stringify(user));
     window.location.reload();
     };
@@ -61,13 +60,14 @@ function App() {
                     handleSearchByName: handleSearchByName,
                     reloadData: reloadData,
                     handleSearchChange: setSearchQuery,
+                    getVideoByCategory: getVideoByCategory,
                 },
             }}
         >
             <Box sx={{ backgroundColor: "#f8f8f8", minHeight: "100vh"}}>
                 <Container maxWidth="lg">
                     <Header />
-                    <CategoryList />
+                    <CategoryList categories={categories}/>
                     <Content videos={videos} />
                 </Container>
             </Box>

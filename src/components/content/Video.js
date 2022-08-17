@@ -30,9 +30,7 @@ export default function Video(props) {
                 avatar={
                     loading 
                     ? <Skeleton animation="wave" variant="circular" width={40} height={40}/> 
-                    : <Avatar sx={{ bgcolor: randomColor() }} aria-label="recipe">
-                        {randomCharacterAlphabet()}
-                        </Avatar>
+                    : <Avatar src={video.createdBy.imageUrl || ""}></Avatar>
                 }
                 title= {loading ? <Skeleton/> : video.createdBy.username}
                 subheader= {loading ? <Skeleton/> : convertDateToLongDate(video.createdAt)}
