@@ -18,7 +18,7 @@ function App() {
     const {showLoginModal, showLogin, hideLogin} = useLoginModal()
     const {showShareModal, showShare, hideShare} = useShareModal();
     const [listVideos, setListVideos] = useState([]);
-    const {videos, categories, hasMoreVideo, loading, searchVideoResult, modeSearching, searchQuery, setSearchQuery, fetchMoreVideo, handleSearchByName, reloadData, getVideoByCategory} = useFetchAndSearchVideo();
+    const {videos, categories, hasMoreVideo, loading, countSearchResult, modeSearching, searchQuery, modeFilterCategory, countVideoByCategory, setSearchQuery, fetchMoreVideoWithoutSearch, fetchMoreVideoWithSearch, loadVideoWithSearch, reloadData, handleFilterByCategory, fetchMoreVideoByCategory} = useFetchAndSearchVideo();
 
     useEffect(() => {
         // For oAuth2
@@ -32,10 +32,10 @@ function App() {
     }, [])
 
     const handleLogin = async (userInfo) => {
-    // Call api to login
-    const user = await loginUser(userInfo.profileObj);
-    localStorage.setItem("currentUser", JSON.stringify(user));
-    window.location.reload();
+        // Call api to login
+        const user = await loginUser(userInfo.profileObj);
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        window.location.reload();
     };
 
     return (
@@ -45,10 +45,12 @@ function App() {
                     searchQuery: searchQuery,
                     currentUser: currentUser,
                     videos: videos,
-                    searchVideoResult: searchVideoResult,
+                    countSearchResult: countSearchResult,
                     modeSearching: modeSearching,
                     hasMoreVideo: hasMoreVideo,
-                    loading: loading
+                    loading: loading, 
+                    modeFilterCategory: modeFilterCategory,
+                    countVideoByCategory, countVideoByCategory,
                 },
                 appCallback: {
                     handleLogin: handleLogin,
@@ -56,11 +58,13 @@ function App() {
                     hideLogin: hideLogin,
                     showShare: showShare,
                     hideShare: hideShare,
-                    fetchMoreVideo: fetchMoreVideo,
-                    handleSearchByName: handleSearchByName,
+                    fetchMoreVideoWithoutSearch: fetchMoreVideoWithoutSearch,
+                    fetchMoreVideoWithSearch: fetchMoreVideoWithSearch,
+                    loadVideoWithSearch: loadVideoWithSearch,
                     reloadData: reloadData,
                     handleSearchChange: setSearchQuery,
-                    getVideoByCategory: getVideoByCategory,
+                    handleFilterByCategory: handleFilterByCategory,
+                    fetchMoreVideoByCategory: fetchMoreVideoByCategory
                 },
             }}
         >

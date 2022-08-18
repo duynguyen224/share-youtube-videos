@@ -8,6 +8,18 @@ function Content(props) {
     const {videos} = props;
     const {appContext, appCallback} = useContext(AppContext);
 
+    const handleFetchMoreData = () => {
+        if(appContext.modeSearching){
+            appCallback.fetchMoreVideoWithSearch();
+        }
+        else if (appContext.modeFilterCategory){
+            appCallback.fetchMoreVideoByCategory();
+        }
+        else{
+            appCallback.fetchMoreVideoWithoutSearch();
+        }
+    }
+
     const renderContent = () => {
         if(videos.length === 0){
             return <h3>No data to display</h3>;
@@ -15,10 +27,11 @@ function Content(props) {
         else{
             return (
                 <Box sx={{ flexGrow: 1, my: 2}}>
-                    {appContext.modeSearching && <Box sx={{fontWeight: "bold"}}>Display {videos.length} of {appContext.searchVideoResult.length} {appContext.searchVideoResult.length > 1 ? "results" : "result"}</Box>}
+                    {appContext.modeSearching && !appContext.loading && <Box sx={{fontWeight: "bold"}}>Display {videos.length} of {appContext.countSearchResult} {appContext.countSearchResult > 1 ? "results" : "result"}</Box>}
+                    {appContext.modeFilterCategory && !appContext.loading && <Box sx={{fontWeight: "bold"}}>Display {videos.length} of {appContext.countVideoByCategory} {appContext.countVideoByCategory > 1 ? "results" : "result"}</Box>}
                     <InfiniteScroll
                         dataLength={videos.length}
-                        next={appCallback.fetchMoreVideo}
+                        next={handleFetchMoreData}
                         hasMore={appContext.hasMoreVideo}
                         loader={<h3 style={{display: "flex", justifyContent: "center"}}>Loading ...</h3>}
                     >

@@ -15,7 +15,8 @@ function CategoryList(props) {
 
     const handleClickChip = (item) => {
         setActive({ id: item.id });
-        appCallback.getVideoByCategory(item);
+        // appCallback.getVideoByCategory(item);
+        appCallback.handleFilterByCategory(item);
     }
 
     return (
