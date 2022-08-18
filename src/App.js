@@ -72,6 +72,11 @@ function App() {
                 <Container maxWidth="lg">
                     <Header />
                     <CategoryList categories={categories}/>
+                    <div>
+                        Làm thêm login thường, tích hợp jwt với access token và refresh token
+                        <br/>
+                        Sau khi đăng nhập thì nhập và sửa đổi một số thông tin của thằng user (cái này dùng modal cho đẹp)
+                    </div>
                     <Content videos={videos} />
                 </Container>
             </Box>
