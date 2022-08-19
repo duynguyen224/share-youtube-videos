@@ -28,6 +28,8 @@ export default function AccountMenu() {
 
     const handleLogout = () => {
         localStorage.removeItem("currentUser");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("accessToken");
         window.location.reload();
     };
 

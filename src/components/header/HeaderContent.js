@@ -62,7 +62,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 function HeaderContent() {
     let navigate = useNavigate();
  
-    const { appContext, appCallback }    = useContext(AppContext);
+    const { appContext, appCallback } = useContext(AppContext);
    
     const showShareModal = () => {
         appCallback.showShare();

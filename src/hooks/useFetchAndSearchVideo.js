@@ -30,11 +30,10 @@ function useFetchAndSearchVideo() {
     useEffect(() => {
         setLoading(true);
         loadVideoWithSearch(searchQuery);
-        let interval = null;
-        interval = setInterval(() => {
+        let timeout = null;
+        setTimeout(() => {
             setLoading(false);
-            clearInterval(interval);
-        }, 100);
+        }, 1500);
     }, [searchQuery])
 
     useEffect(() => {
@@ -68,7 +67,7 @@ function useFetchAndSearchVideo() {
 
         setTotalVideoCount(await countVideoWithoutSearch());
 
-        setInterval(() => {
+        setTimeout(() => {
             setLoading(false);
         }, 1500);
     }
@@ -91,7 +90,7 @@ function useFetchAndSearchVideo() {
         loadVideosWithoutSearch();
 
         setLoading(true);
-        setInterval(() => {
+        setTimeout(() => {
             setLoading(false);
         }, 1500);
     }
@@ -124,9 +123,8 @@ function useFetchAndSearchVideo() {
 
     const handleFilterByCategory = async (item) => {
         setLoading(true);
-        let interval = setTimeout(() => {
+        setTimeout(() => {
             setLoading(false);
-            clearInterval(interval);
         }, 1500);
 
         setSelectedCategory(item);
